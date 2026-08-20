@@ -5,31 +5,41 @@ Read .build-instructions.md FIRST to understand the archetype, layout style, and
 
 ---
 
+## ⚠ RULE #1: NO BROKEN IMAGES
+
+The ONLY image files that exist are listed in the `.build-instructions.md` under "AI-GENERATED IMAGES".
+**Never** use `<Image src="/images/anything-not-in-the-list" />`.
+
+For things without a provided image:
+- **Team/people photos**: `<div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center text-amber-800 font-bold text-xl">AB</div>`
+- **Testimonial avatars**: Colored circle with initials (2 letters)
+- **Icons**: Use `lucide-react` — `import { Star, Phone, CheckCircle } from "lucide-react"`
+- **Decorative backgrounds**: CSS gradients (`bg-gradient-to-r from-stone-900 to-stone-800`)
+- **Product cards without image**: Gradient card with product name, price, and an icon — NO `<Image>`
+- **Gallery without images**: CSS art — colored blocks, gradients, or abstract patterns
+
+---
+
 ## Core Principles
 
 1. **Zero placeholders** — No Lorem ipsum, no "Service 1 / Service 2", no "Coming Soon"
 2. **Real business content** — Invent plausible names, prices, phone numbers, addresses, team names
 3. **Intent-specific layout** — Each archetype has its own visual DNA (see below). Never reuse a generic 3-column card layout for everything.
-4. **AI images** — /images/hero.png and /images/feature.png are pre-generated. Use them with next/image. They MUST appear above the fold.
+4. **AI images** — Use ONLY the image files listed in the instructions. They MUST appear above the fold.
 5. **Color discipline** — Apply the color palette from the instructions. Define CSS vars in globals.css and use them throughout.
-6. **Typography hierarchy** — Every page needs: display heading (H1), section headings (H2), body text, captions. Size, weight, and spacing must differ visibly.
+6. **Typography hierarchy** — Every page needs: display heading (H1), section headings (H2), body text, captions.
 
 ---
 
 ## Available Components
 
-Use shadcn/ui components from `@/components/ui/`:
 ```ts
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-```
-
-Use lucide-react for icons:
-```ts
-import { Star, Phone, MapPin, Clock, ArrowRight, CheckCircle } from "lucide-react"
+import { Star, Phone, MapPin, Clock, ArrowRight, CheckCircle, ShoppingCart } from "lucide-react"
 ```
 
 ---
@@ -39,103 +49,90 @@ import { Star, Phone, MapPin, Clock, ArrowRight, CheckCircle } from "lucide-reac
 ### restaurant
 - Hero: full-viewport /images/hero.png with text overlay. Dark gradient from bottom.
 - Menu: tabbed or categorized grid (Entrantes / Principales / Postres) with real dish names + prices
-- Gallery: masonry or 3-col asymmetric grid using /images/feature.png + CSS generated patterns
-- Reservations: simple form (date, time, guests) — static, no backend needed
+- Gallery: use /images/product-1.png + /images/product-2.png + /images/product-3.png if available; otherwise styled CSS cards
 - AVOID: plain 3-col icon+text feature cards
 
-### ecommerce / fashion
-- Hero: split layout — headline left, /images/hero.png right (rounded, with padding)
-- Products: grid with real product names, prices (€/$/COP), "Add to Cart" buttons (static)
-- Lookbook: /images/feature.png full-width editorial section with overlaid text
+### ecommerce / store
+- Hero: split layout — headline left, /images/hero.png right
+- Products: use /images/product-1.png, product-2.png, product-3.png as product card images
+- For product cards beyond the provided images: gradient background card with name/price/icon — NO broken images
 - AVOID: pricing table format
 
 ### saas / fintech / tech
-- Hero: centered — large eyebrow label, bold H1, subtitle, 2 CTAs, /images/hero.png below as product screenshot
-- Bento grid: asymmetric feature cards (1 large + 2 medium + 2 small)
-- Metrics: horizontal stats bar (e.g. "$2.4B managed", "50K+ users", "99.9% uptime")
-- Pricing: 3-tier table with feature comparison
+- Hero: centered — large eyebrow, bold H1, /images/hero.png as product screenshot below text
+- Bento grid: asymmetric (1 large + 2 medium + 2 small)
+- Pricing: 3-tier table
 - AVOID: full-bleed photography hero
 
 ### clinic / wellness
-- Hero: split — calming /images/hero.png left, headline + trust badges right
-- Services: horizontal scrollable cards OR 2-col list with icons
-- Team: photo cards with name, specialty, credentials (invent realistic ones)
-- Process: numbered steps (Consultation → Treatment → Follow-up)
-- Booking: prominent CTA + simple form
+- Hero: split — /images/hero.png left, headline + trust badges right
+- Services: 2-col list with icons (lucide-react)
+- Team: colored avatar circles with initials + name + specialty — NOT photos
+- Process: numbered steps
 - AVOID: aggressive sales language
 
 ### travel / luxury
-- Hero: full-viewport /images/hero.png, centered text, "EXPLORE" CTA
-- Destinations: grid cards with overlay text (destination name + "From €X,XXX")
-- Experience: /images/feature.png in split layout with descriptive copy
-- Testimonials: large quotes with 5-star ratings
+- Hero: full-viewport /images/hero.png, centered text
+- Destinations: cards with /images/product-1.png, product-2.png overlays; for extras use gradient cards
 - AVOID: SaaS-style bento grids
 
 ### portfolio / agency
-- Hero: minimal — large bold H1 (2-3 words), eyebrow, /images/hero.png as background at 20% opacity OR side panel
-- Work: project grid — alternating full-width and 2-col cards
-- Process: 3-5 step timeline or numbered list
+- Hero: minimal — large bold H1, /images/hero.png as background at low opacity
+- Work: grid — alternating full-width and 2-col cards (use CSS backgrounds for missing images)
 - AVOID: pricing tables
 
 ### service business
-- Hero: text-left, value prop in 1 sentence, /images/hero.png right
-- Process: 3-5 steps with icons (How it works)
-- Why us: 3-4 differentiators with icons
-- FAQ: accordion with real questions
-- Contact: split — map/info left, form right
-- AVOID: generic "lorem ipsum" FAQs
+- Hero: text-left, /images/hero.png right
+- Process: 3-5 steps with lucide-react icons
+- FAQ: accordion
+- AVOID: generic Lorem ipsum FAQs
 
 ---
 
 ## Layout Diversity Rules
 
-Never use this anti-pattern:
+Never use:
 ❌ Hero → 3 feature icons → 3 testimonial cards → CTA
 
 Use varied section rhythms:
 ✅ Hero → Split about → Asymmetric bento → Full-bleed image → Single quote → CTA
 
-Vary alignment per section: left-aligned → centered → right-aligned → full-bleed
+Vary alignment: left-aligned → centered → right-aligned → full-bleed
 Vary backgrounds: white → light gray → brand color → dark → white
 
 ---
 
 ## Tailwind 4 Notes
 
-- Config is in `app/globals.css` under `@theme { }`
-- Add custom colors as CSS vars:
-  ```css
-  @theme {
-    --color-brand: #your-accent;
-    --color-surface: #your-bg;
-  }
-  ```
-- Use: `bg-[var(--color-brand)]` or define utility classes
+Config is in `app/globals.css` under `@theme { }`. Add custom colors:
+```css
+@theme {
+  --color-brand: #your-accent;
+  --color-surface: #your-bg;
+}
+```
+
+## next/image Usage
+
+```tsx
+// Full-bleed background:
+<div className="relative h-screen overflow-hidden">
+  <Image src="/images/hero.png" alt="..." fill className="object-cover" />
+  <div className="relative z-10 h-full flex items-center">...</div>
+</div>
+
+// Contained:
+<Image src="/images/product-1.png" alt="..." width={600} height={600} className="rounded-xl object-cover w-full h-64" />
+```
 
 ---
 
-## Next.js 16 Notes
+## Quality Checklist
 
-- Read `node_modules/next/dist/docs/` for current API
-- Use `Image` from `next/image` with `fill` prop for background images:
-  ```tsx
-  <div className="relative h-screen">
-    <Image src="/images/hero.png" alt="..." fill className="object-cover" />
-    <div className="relative z-10">...</div>
-  </div>
-  ```
-- App Router: all components in `app/` are Server Components by default
-- Add `"use client"` only for interactive components (forms, state)
-
----
-
-## Quality Checklist (verify before finishing)
-
-- [ ] /images/hero.png appears in the hero section above the fold
-- [ ] /images/feature.png appears in a section body
+- [ ] Every `<Image src="...">` references a file from the "AI-GENERATED IMAGES" list
+- [ ] No `<Image src="/images/team-*.jpg">` or other non-existent paths
+- [ ] /images/hero.png visible above the fold
 - [ ] No Lorem ipsum anywhere
-- [ ] All prices are realistic for the business type and currency
-- [ ] Color palette from the instructions is actually applied
-- [ ] Typography hierarchy is visible (different sizes/weights)
-- [ ] Mobile layout doesn't break (use flex-col, gap, padding adjustments)
-- [ ] next build would pass (no TypeScript errors, no missing imports)
+- [ ] Team sections use CSS avatars with initials, not image tags
+- [ ] next build passes (no TypeScript errors)
+
