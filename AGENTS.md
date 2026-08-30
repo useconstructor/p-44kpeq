@@ -127,6 +127,28 @@ Config is in `app/globals.css` under `@theme { }`. Add custom colors:
 
 ---
 
+## Next.js Client Components
+
+**CRITICAL: `'use client'` MUST have quotes — it is a string directive, not a keyword.**
+
+```tsx
+// ✅ CORRECT — always quotes, always first line of file
+'use client'
+
+import { useState } from 'react'
+```
+
+```tsx
+// ❌ WRONG — bare use client without quotes causes build error: "use is not defined"
+use client
+
+import { useState } from 'react'
+```
+
+Add `'use client'` only when the component uses: `useState`, `useEffect`, `useRef`, event handlers (`onClick`, `onChange`), or any browser-only API. Server Components (default) cannot use these.
+
+---
+
 ## Quality Checklist
 
 - [ ] Every `<Image src="...">` references a file from the "AI-GENERATED IMAGES" list
@@ -134,5 +156,6 @@ Config is in `app/globals.css` under `@theme { }`. Add custom colors:
 - [ ] /images/hero.png visible above the fold
 - [ ] No Lorem ipsum anywhere
 - [ ] Team sections use CSS avatars with initials, not image tags
+- [ ] Every `'use client'` directive has quotes (bare `use client` → build error)
 - [ ] next build passes (no TypeScript errors)
 
