@@ -7,7 +7,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "seed:croissant": "npx tsx scripts/seed-croissant.ts"
+    "seed:croissant": "npx tsx scripts/seed-croissant.ts",
+    "seed:pastel-chocolate": "npx tsx scripts/seed-pastel-chocolate.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",
