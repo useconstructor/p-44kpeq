@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Menu, X, ShoppingCart, ArrowRight, Wheat, Clock, Users, Leaf, ChevronLeft, ChevronRight, Star, Check, Phone, Mail, MapPin, Instagram, Facebook, Twitter } from 'lucide-react'
@@ -34,6 +34,25 @@ export default function HomePage() {
   const [specialOrderLoading, setSpecialOrderLoading] = useState(false)
   const [specialOrderSuccess, setSpecialOrderSuccess] = useState(false)
   const [specialOrderError, setSpecialOrderError] = useState('')
+
+  const [products, setProducts] = useState<Array<{ id: number; name: string; price: number; description: string | null; created_at: string }>>([])
+
+  useEffect(() => {
+    fetch('/api/products').then(r => r.json()).then(setProducts)
+  }, [])
+
+  const addTestProduct = async () => {
+    await fetch('/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Pan de prueba',
+        price: 45.00,
+        description: 'Un delicioso pan de prueba'
+      })
+    })
+    fetch('/api/products').then(r => r.json()).then(setProducts)
+  }
 
   const navLinks = [
     { name: 'Our Story', href: '#story' },
@@ -310,27 +329,43 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="lg:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-6">
-              {featuredProducts.map((product, index) => (
-                <Card key={index} className="group border-0 rounded-none overflow-hidden" style={{ backgroundColor: '#F5EDE4' }}>
-                  <div className="relative aspect-square overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-sm font-medium mb-1" style={{ color: '#2C2C2C', fontFamily: 'Inter, sans-serif' }}>
-                      {product.name}
-                    </h3>
-                    <p className="text-sm" style={{ color: '#C45D3F' }}>
-                      {product.price}
-                    </p>
-                  </div>
-                </Card>
-              ))}
+            <div className="lg:col-span-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {products.map((product) => (
+                  <Card key={product.id} className="group border-0 rounded-none overflow-hidden" style={{ backgroundColor: '#F5EDE4' }}>
+                    <div className="relative aspect-square overflow-hidden">
+                      <Image
+                        src="/images/hero.png"
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-sm font-medium mb-1" style={{ color: '#2C2C2C', fontFamily: 'Inter, sans-serif' }}>
+                        {product.name}
+                      </h3>
+                      <p className="text-sm" style={{ color: '#C45D3F' }}>
+                        ${product.price} MXN
+                      </p>
+                      {product.description && (
+                        <p className="text-xs mt-1" style={{ color: '#4A3728' }}>
+                          {product.description}
+                        </p>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </div>
+              <div className="mt-6">
+                <Button
+                  onClick={addTestProduct}
+                  className="rounded-none px-6"
+                  style={{ backgroundColor: '#C45D3F', color: '#FBF8F3' }}
+                >
+                  Agregar producto de prueba
+                </Button>
+              </div>
             </div>
           </div>
         </div>
