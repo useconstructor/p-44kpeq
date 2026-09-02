@@ -23,6 +23,18 @@ export default function HomePage() {
   const [formSuccess, setFormSuccess] = useState(false)
   const [formError, setFormError] = useState('')
 
+  const [specialOrderForm, setSpecialOrderForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    eventType: '',
+    eventDate: '',
+    details: ''
+  })
+  const [specialOrderLoading, setSpecialOrderLoading] = useState(false)
+  const [specialOrderSuccess, setSpecialOrderSuccess] = useState(false)
+  const [specialOrderError, setSpecialOrderError] = useState('')
+
   const navLinks = [
     { name: 'Our Story', href: '#story' },
     { name: 'Breads', href: '#products' },
@@ -106,6 +118,33 @@ export default function HomePage() {
 
   const prevTestimonial = () => {
     setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+  }
+
+  const handleSpecialOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSpecialOrderLoading(true)
+    setSpecialOrderError('')
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_CONSTRUCTOR_API}/v1/forms/${process.env.NEXT_PUBLIC_PROJECT_ID}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...specialOrderForm, formType: 'special_order' })
+        }
+      )
+
+      if (response.ok) {
+        setSpecialOrderSuccess(true)
+      } else {
+        setSpecialOrderError('Algo salió mal. Por favor intenta de nuevo.')
+      }
+    } catch {
+      setSpecialOrderError('No se pudo enviar el mensaje. Por favor intenta más tarde.')
+    } finally {
+      setSpecialOrderLoading(false)
+    }
   }
 
   return (
@@ -593,6 +632,132 @@ export default function HomePage() {
                 style={{ backgroundColor: '#C45D3F', color: '#FBF8F3' }}
               >
                 {formLoading ? 'Enviando...' : 'Send Message'}
+              </Button>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* Pedidos Especiales Section */}
+      <section id="pedidos-especiales" className="py-20" style={{ backgroundColor: '#F5EDE4' }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-xs tracking-[0.2em] uppercase mb-4 block" style={{ color: '#C45D3F', fontFamily: 'Inter, sans-serif' }}>
+              Pedidos Especiales
+            </span>
+            <h2 className="text-3xl lg:text-4xl font-normal mb-4" style={{ color: '#2C2C2C', fontFamily: 'Crimson Text, serif' }}>
+              Solicita tu Pedido Especial
+            </h2>
+            <p className="text-sm" style={{ color: '#4A3728', fontFamily: 'Inter, sans-serif' }}>
+              ¿Tienes un evento especial? Completa el formulario y nos pondremos en contacto contigo para crear el pedido perfecto.
+            </p>
+          </div>
+
+          {specialOrderSuccess ? (
+            <div className="text-center p-8 rounded-none" style={{ backgroundColor: '#FBF8F3' }}>
+              <Check className="w-12 h-12 mx-auto mb-4" style={{ color: '#C45D3F' }} />
+              <h3 className="text-xl font-medium mb-2" style={{ color: '#2C2C2C', fontFamily: 'Crimson Text, serif' }}>
+                ¡Solicitud Enviada!
+              </h3>
+              <p className="text-sm" style={{ color: '#4A3728' }}>
+                Gracias por tu interés. Nos comunicaremos contigo en las próximas 24 horas.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSpecialOrderSubmit} className="space-y-6" style={{ backgroundColor: '#FBF8F3', padding: '2rem' }}>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#4A3728' }}>
+                    Nombre
+                  </label>
+                  <Input
+                    type="text"
+                    required
+                    value={specialOrderForm.name}
+                    onChange={(e) => setSpecialOrderForm({ ...specialOrderForm, name: e.target.value })}
+                    className="rounded-none border-gray-300 focus:border-[#C45D3F] focus:ring-[#C45D3F]"
+                    style={{ backgroundColor: '#FBF8F3' }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#4A3728' }}>
+                    Correo Electrónico
+                  </label>
+                  <Input
+                    type="email"
+                    required
+                    value={specialOrderForm.email}
+                    onChange={(e) => setSpecialOrderForm({ ...specialOrderForm, email: e.target.value })}
+                    className="rounded-none border-gray-300 focus:border-[#C45D3F] focus:ring-[#C45D3F]"
+                    style={{ backgroundColor: '#FBF8F3' }}
+                  />
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#4A3728' }}>
+                    Teléfono
+                  </label>
+                  <Input
+                    type="tel"
+                    value={specialOrderForm.phone}
+                    onChange={(e) => setSpecialOrderForm({ ...specialOrderForm, phone: e.target.value })}
+                    className="rounded-none border-gray-300 focus:border-[#C45D3F] focus:ring-[#C45D3F]"
+                    style={{ backgroundColor: '#FBF8F3' }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#4A3728' }}>
+                    Tipo de Evento
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Ej: Boda, Cumpleaños, Corporativo"
+                    value={specialOrderForm.eventType}
+                    onChange={(e) => setSpecialOrderForm({ ...specialOrderForm, eventType: e.target.value })}
+                    className="rounded-none border-gray-300 focus:border-[#C45D3F] focus:ring-[#C45D3F]"
+                    style={{ backgroundColor: '#FBF8F3' }}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: '#4A3728' }}>
+                  Fecha del Evento
+                </label>
+                <Input
+                  type="date"
+                  value={specialOrderForm.eventDate}
+                  onChange={(e) => setSpecialOrderForm({ ...specialOrderForm, eventDate: e.target.value })}
+                  className="rounded-none border-gray-300 focus:border-[#C45D3F] focus:ring-[#C45D3F]"
+                  style={{ backgroundColor: '#FBF8F3' }}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: '#4A3728' }}>
+                  Detalles del Pedido
+                </label>
+                <Textarea
+                  required
+                  rows={5}
+                  placeholder="Describe lo que necesitas: cantidad, tipo de productos, especificaciones especiales..."
+                  value={specialOrderForm.details}
+                  onChange={(e) => setSpecialOrderForm({ ...specialOrderForm, details: e.target.value })}
+                  className="rounded-none border-gray-300 focus:border-[#C45D3F] focus:ring-[#C45D3F]"
+                  style={{ backgroundColor: '#FBF8F3' }}
+                />
+              </div>
+
+              {specialOrderError && (
+                <p className="text-sm text-red-600">{specialOrderError}</p>
+              )}
+
+              <Button
+                type="submit"
+                disabled={specialOrderLoading}
+                className="w-full rounded-none py-6"
+                style={{ backgroundColor: '#C45D3F', color: '#FBF8F3' }}
+              >
+                {specialOrderLoading ? 'Enviando...' : 'Enviar Solicitud'}
               </Button>
             </form>
           )}
